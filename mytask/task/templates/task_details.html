@@ -1,0 +1,19 @@
+<html>
+<head><title>MY Task - Task-Details</title></head>
+<body>
+	<p>Welcome <b>{{ user.get_full_name }}</b></p>
+	<p><a href="{% url task.views.user %}">Enter Task</a></p>
+	<p><a href="{% url task.views.log_out %}">Logout</a></p>
+	{% if task %}
+	<h3>My Tasks Details</h3>
+	<table border="1">
+	<tr><th>Date</th><th>Task Name</th><th>Task Description</th><th>Edit</th><th>Delete</th></tr>
+	{% for task in task %}
+	<tr><td>{{ task.created }}</td><td>{{ task.name }}</td><td>{{ task.desc }}</td><td><a href="{% url task.views.task_edit task.pk %}">Edit</a></td><td><a href="{% url task.views.task_delete task.pk %}">Delete</a></td></tr>
+	{% endfor %}
+    </table>
+	{% else %}
+	<p>No Tasks in Database</p>
+	{% endif %}
+</body>
+</html>

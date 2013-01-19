@@ -1,0 +1,92 @@
+<html>
+<head><title>MY Task - Owner</title></head>
+<body>
+	<p>Welcome <b>{{ userr.get_full_name }}</b></p>
+	<p><a href="{% url task.views.log_out %}">Logout</a></p>
+	<div>
+		<div id="q">
+			<select id="user">
+				<option id="selectuser">Select User</option>
+				{% for user in user %}
+				<option id="{{ user.pk }}">{{ user.get_full_name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div id="a">
+			No Data
+		</div>
+	</div>
+</body>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+    $(document).ajaxSend(function(event, xhr, settings) {
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    function sameOrigin(url) {
+        // url could be relative or scheme relative or absolute
+        var host = document.location.host; // host + port
+        var protocol = document.location.protocol;
+        var sr_origin = '//' + host;
+        var origin = protocol + sr_origin;
+        // Allow absolute or scheme relative URLs to same origin
+        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+            (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+            // or any other URL that isn't scheme relative or absolute i.e relative.
+            !(/^(\/\/|http:|https:).*/.test(url));
+    }
+    function safeMethod(method) {
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+    }
+});
+
+    $("#user").change(function() {
+        var id = $('#user option:selected').attr("id");
+        $('#a').text('');
+        if(id == "selectuser")
+        {
+        	$('#a').text('No Data');
+        }
+        else
+        {
+        	$.ajax({
+        		url: "{% url task.views.ownerprocess %}",
+        		type: "POST",
+        		dataType: "json",
+        		data: { username : id },
+        		success: function(resp)
+        		{
+                    $('#a').text('');
+                    var table = "<table border='1' width='600'><tr><th>Name</th><th>Description</th><th>Date</th></tr>"; 
+                    $(resp).each(function(){
+                        //console.info(this.fields);
+                        table += "<tr><td>" + this.fields.name + "</td><td>" + this.fields.desc + "</td><td>" + this.fields.created + "</td></tr>";
+                    });
+                    table +="</table>"
+                    $('#a').append(table);
+        		}
+        		});
+        	//$('#a').html(id);
+        }
+    });
+});
+</script>
+</html>

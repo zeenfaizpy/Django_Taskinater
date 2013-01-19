@@ -1,0 +1,33 @@
+<html>
+<head><title>MY Task - Register</title></head>
+<body>
+	<div>Login Here --> <a href="{% url task.views.home %}">Click</a></div>
+	{% if user.errors %}
+    <ul>
+    {% for field in user %}
+    {% if field.errors %}
+        <li><strong>{{ field.name }}{{ field.errors }}</strong></li>
+    {% endif %}
+    {% endfor %}
+    {% if userpro.errors %}
+    {% for field in userpro %}
+    {% if field.errors %}
+        <li><strong>{{ field.name }}{{ field.errors }}</strong></li>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    </ul>
+    {% endif %}
+	<form action="{% url task.views.register %}" method="POST">
+		{% csrf_token %}
+		<p>Username:{{ user.username }}</p>
+		<p>Password:{{ user.password }}</p>
+		<p>Email:{{ user.email }}</p>
+		<p>FirstName:{{ user.first_name }}</p>
+		<p>LastName:{{ user.last_name }}</p>
+		<p>Secondary Email:{{ userpro.secondary_email }}</p>
+		<p>Gender:{{ userpro.gender}}</p>
+		<input type="submit" value="SUBMIT" />
+	</form>       
+</body>
+</html>

@@ -1,0 +1,15 @@
+<html>
+<head><title>MY Task - Task-Edit</title></head>
+<body>
+	<p>Welcome <b>{{ user.get_full_name }}</b></p>
+	<p><a href="{% url task.views.user %}">Enter Task</a></p>
+	<p><a href="{% url task.views.log_out %}">Logout</a></p>
+	<form action="{% url task.views.task_edit tform.instance.pk %}" method="POST">
+		{% csrf_token %}
+		<p>Task Name:{{ tform.name }}</p>
+		<p>Task Description:{{ tform.desc }}</p>
+		<p>Date:{{ tform.created }}</p>
+		<input type="submit" value="SUBMIT" />
+	</form>
+</body>
+</html>
